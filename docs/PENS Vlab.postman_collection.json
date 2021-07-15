@@ -1,0 +1,236 @@
+{
+	"info": {
+		"_postman_id": "cb9f6cfb-ea12-4e71-ad56-8eddb9456567",
+		"name": "PENS Vlab",
+		"description": "Dokumentasi API untuk PENS Virtual Lab",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Compiler",
+			"item": [
+				{
+					"name": "Compiler Service - Compile PHP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/repos/pens-vlab/pens-vlab-compiler-new/sample/sample1.php"
+								},
+								{
+									"key": "prog_language",
+									"value": "php",
+									"type": "text",
+									"disabled": true
+								}
+							],
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/compile/php",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"compile",
+								"php"
+							]
+						},
+						"description": "Compile file berformat .php"
+					},
+					"response": []
+				},
+				{
+					"name": "Compile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "prog_language",
+									"value": "php",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/repos/pens-vlab/pens-vlab-compiler-new/sample/sample1.php"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/v1/compile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"v1",
+								"compile"
+							]
+						},
+						"description": "Compile file berformat .php"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Courses",
+			"item": [
+				{
+					"name": "Get All Courses",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/courses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Course Detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/course/php",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"course",
+								"php"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Lesson",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3001/api/v1/lesson/8bbe1e08-11cf-4508-aaea-fd5306ca7ff9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"v1",
+								"lesson",
+								"8bbe1e08-11cf-4508-aaea-fd5306ca7ff9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Progress",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"\",\r\n    \"answer\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/v1/lesson/update-progress",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"v1",
+								"lesson",
+								"update-progress"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Check User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQ3NjksIm5ycCI6IjIxMTAxNzEwNDgiLCJuYW1lIjoiQW5nZ2EgUHJhZGlwdGEgS3VybmlhIFB1dHJhIiwia2VsYXMiOjQsInByb2dyYW0iOiJENCIsImp1cnVzYW4iOiJUZWtuaWsgSW5mb3JtYXRpa2EiLCJpbWFnZSI6Imh0dHBzOi8vZXRob2wucGVucy5hYy5pZC9hcGkvaW1hZ2VzL3VzZXIucG5nIiwicm9sZSI6MiwiY2hhdF9pZCI6IjVlOGQ3N2U4MjRkYTJjNzEwZDJhNjEyYiIsImlhdCI6MTYyMjI2MjI1N30.7UPef8mR4sIhktDGN786E3h3vCWUwm2CbV1Q7J6rF5k\",\r\n    \"userCas\": {\r\n        \"email\": \"pradiptakp@it.student.pens.ac.id\",\r\n        \"nip\": null,\r\n        \"nrp\": \"2110171048\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/api/v1/user/check",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"check"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

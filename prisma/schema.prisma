@@ -1,0 +1,207 @@
+generator client {
+  provider      = "prisma-client-js"
+  output = "../node_modules/.prisma/client"
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+type DateType = String
+
+
+
+model admins {
+  id         String    @id @db.VarChar(50) @default(uuid())
+  user_id    String    @db.VarChar(50)
+  name       String    @db.VarChar(255)
+  pswd       String    @db.VarChar(255)
+  users      users     @relation(fields: [user_id], references: [id])
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model classes {
+  id       String     @id @db.VarChar(50) @default(uuid())
+  kelas    String     @db.VarChar(255)
+  program  String     @db.VarChar(255)
+  jurusan  String     @db.VarChar(255)
+  students students[]
+  quizzes  quizzes[]
+
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model lecturers {
+  id         String    @id @db.VarChar(50) @default(uuid())
+  user_id    String    @db.VarChar(50)
+  name       String    @db.VarChar(255)
+  position   String    @db.VarChar(255)
+  nip        String    @db.VarChar(255)
+  avatar_url String?   @db.VarChar(255)
+  users      users     @relation(fields: [user_id], references: [id])
+  quizzes    quizzes[]
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model modules {
+  id                String         @id @db.VarChar(50) @default(uuid())
+  prog_languages_id String         @db.VarChar(50)
+  title             String         @db.VarChar(255)
+  order             Int            
+  overview          String
+  prog_languages    prog_languages @relation(fields: [prog_languages_id], references: [id])
+  submodules        submodules[]
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model prog_languages {
+  id            String    @id @db.VarChar(50)
+  name          String    @db.VarChar(255)
+  thumbnail_url String    @db.VarChar(255)
+  description   String    
+  modules       modules[]
+  quizzes       quizzes[]
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model quizzes {
+  id              String            @id @db.VarChar(50) @default(uuid())
+  assignee_id     String            @db.VarChar(50)
+  title           String            @db.VarChar(255)
+  prog_languages_id String          @db.VarChar(50)
+  class_id        String            @db.VarChar(50)
+  question        String
+  due_time        DateTime
+  prog_languages  prog_languages    @relation(fields: [prog_languages_id], references: [id])
+  classes         classes           @relation(fields: [class_id], references: [id])
+  lecturers       lecturers         @relation(fields: [assignee_id], references: [id])
+  student_to_quiz student_to_quiz[] 
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model roles {
+  id           String         @id @db.VarChar(50) @default(uuid())
+  role_name    String         @unique @db.VarChar(255)
+  user_to_role user_to_role[] 
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model student_to_quiz {
+  student_id   String   @db.VarChar(50)
+  quiz_id      String   @db.VarChar(50)
+  answer       String?
+  code         String?
+  score        Int?
+  feedback     String?
+  is_submitted Boolean
+  quizzes      quizzes  @relation(fields: [quiz_id], references: [id])
+  students     students @relation(fields: [student_id], references: [id])
+  time_submitted DateTime?
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@id([student_id, quiz_id])
+}
+
+model students {
+  id              String            @id @db.VarChar(50) @default(uuid())
+  user_id         String            @db.VarChar(50)
+  class_id        String            @db.VarChar(50)
+  name            String            @db.VarChar(255)
+  nrp             String            @db.VarChar(255)
+  avatar_url      String?           @db.VarChar(255)
+  classes         classes           @relation(fields: [class_id], references: [id])
+  users           users             @relation(fields: [user_id], references: [id])
+  student_to_quiz student_to_quiz[] 
+  user_progress   user_progress[]   
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model submodule_exercises {
+  id              String     @id @db.VarChar(50) @default(uuid())
+  submodule_id    String     @db.VarChar(50)
+  placeholder     String
+  expected_output String
+  expected_code   String
+  submodules      submodules @relation(fields: [submodule_id], references: [id])
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model submodules {
+  id                  String                @id @db.VarChar(50) @default(uuid())
+  title               String                @db.VarChar(255)
+  module_id           String                @db.VarChar(50)
+  contents            String
+  order               Int                   
+  is_exercise         Boolean
+  modules             modules               @relation(fields: [module_id], references: [id])
+  submodule_exercises submodule_exercises?
+  user_progress       user_progress[]       
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model user_progress {
+  student_id   String     @db.VarChar(50)
+  submodule_id String     @db.VarChar(50)
+  is_done      Boolean
+  last_answer  String
+  students     students   @relation(fields: [student_id], references: [id])
+  submodules   submodules @relation(fields: [submodule_id], references: [id])
+
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@id([student_id, submodule_id])
+}
+
+model user_to_role {
+  user_id String @db.VarChar(50)
+  role_id String @db.VarChar(50)
+  roles   roles  @relation(fields: [role_id], references: [id])
+  users   users  @relation(fields: [user_id], references: [id])
+
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@id([user_id, role_id])
+}
+
+model users {
+  id           String         @id @db.VarChar(50) @default(uuid())
+  email        String         @unique @db.VarChar(255)
+  lecturers    lecturers?
+  students     students?
+  admins       admins?
+  user_to_role user_to_role[] 
+    
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
