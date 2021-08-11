@@ -36,7 +36,7 @@ export const postCompile = async (
     res.status(200).send(output.data);
   } catch (err) {
     fs.unlinkSync("./tempUploads/" + fileName);
-    res.status(403).send(err.response.data);
+    res.status(400).send(err.response.data);
     next(err);
   }
 };
