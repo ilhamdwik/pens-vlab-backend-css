@@ -28,6 +28,7 @@
   "scripts": {
     "build": "tsc --project ./",
     "dev": "nodemon ./src/server.ts",
+    "start": "ts-node ./src/server.ts",
     "prisma:generate": "npx prisma generate",
     "prisma:seed": "npx prisma db seed --preview-feature",
     "prisma:reset": "npx prisma migrate reset",
