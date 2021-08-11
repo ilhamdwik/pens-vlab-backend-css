@@ -4,6 +4,19 @@ import { Response, Request, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+type userCookie = {
+  id: number;
+  nrp: string;
+  name: string;
+  kelas: number;
+  program: string;
+  jurusan: string;
+  image: string;
+  role: number;
+  chat_id: string;
+  iat: number;
+};
+
 /**
  * Compiler API.
  * @route POST /api/v1/auth/login-admin
@@ -82,33 +95,11 @@ export const postCheckUser = async (
 ) => {
   try {
     //on production change this to jwt.verify using ETHOL secret token
-    // const userData = jwt.decode(req.body.token) as {
-    //   id: number;
-    //   nrp: string;
-    //   name: string;
-    //   kelas: number;
-    //   program: string;
-    //   jurusan: string;
-    //   image: string;
-    //   role: number;
-    //   chat_id: string;
-    //   iat: number;
-    // };
-    const userData = jwt.verify(
-      req.body.token,
+    const userData = (
       process.env.ETHOL_SECRET_TOKEN
-    ) as {
-      id: number;
-      nrp: string;
-      name: string;
-      kelas: number;
-      program: string;
-      jurusan: string;
-      image: string;
-      role: number;
-      chat_id: string;
-      iat: number;
-    };
+        ? jwt.verify(req.body.token, process.env.ETHOL_SECRET_TOKEN)
+        : jwt.decode(req.body.token)
+    ) as userCookie;
 
     const user = await req.db.users.findUnique({
       where: { email: req.body.userCas.email },
