@@ -30,7 +30,8 @@
     "dev": "nodemon ./src/server.ts",
     "start": "ts-node ./src/server.ts",
     "prisma:generate": "npx prisma generate",
-    "prisma:seed": "npx prisma db seed --preview-feature",
+    "prisma:seed-admin": "ts-node ./prisma/seed-admin.ts",
+    "prisma:seed-data": "ts-node ./prisma/seed-data.ts",
     "prisma:reset": "npx prisma migrate reset",
     "prisma:migrate": "npx prisma migrate dev",
     "ts-node": "ts-node --compiler-options {\"\"\"module\"\"\":\"\"\"commonjs\"\"\"}"
