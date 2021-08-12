@@ -617,42 +617,15 @@ Operator aritmatika PHP digunakan dengan nilai numerik untuk melakukan operasi a
     },
   });
 
-  // user related
-  const roleAdmin = await prisma.roles.create({
-    data: {
-      id: "adm",
-      role_name: "admin",
-    },
-  });
-
-  const userAdmin = await prisma.users.create({
-    data: {
-      email: "sherlymaya@pens.ac.id",
-    },
-  });
-
-  await prisma.user_to_role.create({
-    data: {
-      user_id: userAdmin.id,
-      role_id: roleAdmin.id,
-    },
-  });
-
-  const hash2 = await bcrypt.hash("sherlycantik", 12);
-
-  await prisma.admins.create({
-    data: {
-      name: "Sherly Maya",
-      pswd: hash2,
-      user_id: userAdmin.id,
-    },
-  });
-
   await prisma.roles.createMany({
     data: [
       {
         id: "stu",
         role_name: "student",
+      },
+      {
+        id: "adm",
+        role_name: "admin",
       },
       {
         id: "lec",
