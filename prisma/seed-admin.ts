@@ -2,12 +2,18 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import bcrypt from "bcrypt";
 
+const adminData = {
+  email: "admin@pens.ac.id",
+  password: "password",
+  name: "Admin",
+};
+
 async function main() {
   // user related
 
   const userAdmin = await prisma.users.create({
     data: {
-      email: "admin@pens.ac.id",
+      email: adminData.email,
     },
   });
 
@@ -18,11 +24,11 @@ async function main() {
     },
   });
 
-  const hash2 = await bcrypt.hash("admin123", 12);
+  const hash2 = await bcrypt.hash(adminData.password, 12);
 
   await prisma.admins.create({
     data: {
-      name: "Admin",
+      name: adminData.name,
       pswd: hash2,
       user_id: userAdmin.id,
     },
