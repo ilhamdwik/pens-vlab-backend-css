@@ -617,57 +617,75 @@ Operator aritmatika PHP digunakan dengan nilai numerik untuk melakukan operasi a
     },
   });
 
-  await prisma.roles.createMany({
-    data: [
-      {
-        id: "stu",
-        role_name: "student",
-      },
-      {
-        id: "adm",
-        role_name: "admin",
-      },
-      {
-        id: "lec",
-        role_name: "lecturer",
-      },
-    ],
-  });
-
   await prisma.classes.createMany({
     data: [
       {
-        kelas: "1",
+        kelas: "1 ITA D4",
         program: "D4",
         jurusan: "Teknik Informatika",
       },
       {
-        kelas: "2",
+        kelas: "1 ITB D4",
         program: "D4",
         jurusan: "Teknik Informatika",
       },
       {
-        kelas: "3",
+        kelas: "2 ITA D4",
         program: "D4",
         jurusan: "Teknik Informatika",
       },
       {
-        kelas: "4",
+        kelas: "2 ITB D4",
         program: "D4",
         jurusan: "Teknik Informatika",
       },
       {
-        kelas: "1",
+        kelas: "3 ITA D4",
+        program: "D4",
+        jurusan: "Teknik Informatika",
+      },
+      {
+        kelas: "3 ITB D4",
+        program: "D4",
+        jurusan: "Teknik Informatika",
+      },
+      {
+        kelas: "4 ITA D4",
+        program: "D4",
+        jurusan: "Teknik Informatika",
+      },
+      {
+        kelas: "4 ITB D4",
+        program: "D4",
+        jurusan: "Teknik Informatika",
+      },
+      {
+        kelas: "1 ITA D3",
         program: "D3",
         jurusan: "Teknik Informatika",
       },
       {
-        kelas: "2",
+        kelas: "1 ITB D3",
         program: "D3",
         jurusan: "Teknik Informatika",
       },
       {
-        kelas: "3",
+        kelas: "2 ITA D3",
+        program: "D3",
+        jurusan: "Teknik Informatika",
+      },
+      {
+        kelas: "2 ITB D3",
+        program: "D3",
+        jurusan: "Teknik Informatika",
+      },
+      {
+        kelas: "3 ITA D3",
+        program: "D3",
+        jurusan: "Teknik Informatika",
+      },
+      {
+        kelas: "3 ITB D3",
         program: "D3",
         jurusan: "Teknik Informatika",
       },

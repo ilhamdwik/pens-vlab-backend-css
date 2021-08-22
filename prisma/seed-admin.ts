@@ -11,26 +11,13 @@ const adminData = {
 async function main() {
   // user related
 
-  const userAdmin = await prisma.users.create({
-    data: {
-      email: adminData.email,
-    },
-  });
-
-  await prisma.user_to_role.create({
-    data: {
-      user_id: userAdmin.id,
-      role_id: "adm",
-    },
-  });
-
   const hash2 = await bcrypt.hash(adminData.password, 12);
 
   await prisma.admins.create({
     data: {
       name: adminData.name,
       pswd: hash2,
-      user_id: userAdmin.id,
+      email: adminData.email,
     },
   });
 }
