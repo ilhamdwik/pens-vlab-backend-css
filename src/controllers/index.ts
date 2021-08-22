@@ -9,9 +9,7 @@ import * as lecturersApi from "./lecturers";
 import * as lessonApi from "./lesson";
 import * as modulesApi from "./modules";
 import * as quizzesApi from "./quizzes";
-import * as rolesApi from "./roles";
 import * as studentsApi from "./students";
-import * as userApi from "./user";
 
 /**
  * Classes API.
@@ -36,8 +34,6 @@ export const controllers = {
   ...lessonApi,
   ...modulesApi,
   ...quizzesApi,
-  ...rolesApi,
   ...studentsApi,
-  ...userApi,
   getTimeApi,
 };

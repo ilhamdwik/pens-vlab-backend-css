@@ -4,7 +4,7 @@ import cors from "cors";
 import errorhandler from "errorhandler";
 import fileUpload from "express-fileupload";
 import compression from "compression";
-import { PrismaClient, users } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { Express } from "express-serve-static-core";
 var isProduction = process.env.NODE_ENV === "production";
 import jwt from "jsonwebtoken";
@@ -147,16 +147,13 @@ export const createServer = async (): Promise<Express> => {
       process.env.SECRET_TOKEN as string
     ) as userPayload;
 
-    const user = await req.db.users.findUnique({
+    const user = await req.db.admins.findUnique({
       where: {
         id: decoded.user_id,
       },
-      include: {
-        admins: true,
-      },
     });
 
-    if (!user.admins) return res.sendStatus(401);
+    if (!user) return res.sendStatus(401);
 
     next();
   };
@@ -380,33 +377,6 @@ export const createServer = async (): Promise<Express> => {
     controllers.adminDeleteQuiz
   );
 
-  // roles
-  app.get(
-    "/api/v1/admin/roles",
-    authenticateTokenAdmin,
-    controllers.adminGetRoles
-  );
-  app.get(
-    "/api/v1/admin/roles/:id",
-    authenticateTokenAdmin,
-    controllers.adminGetDetailRole
-  );
-  app.post(
-    "/api/v1/admin/roles/create",
-    authenticateTokenAdmin,
-    controllers.adminPostCreateRole
-  );
-  app.put(
-    "/api/v1/admin/roles/update/:id",
-    authenticateTokenAdmin,
-    controllers.adminPutUpdateRole
-  );
-  app.delete(
-    "/api/v1/admin/roles/delete/:id",
-    authenticateTokenAdmin,
-    controllers.adminDeleteRole
-  );
-
   // students
   app.get(
     "/api/v1/admin/students",
@@ -432,33 +402,6 @@ export const createServer = async (): Promise<Express> => {
     "/api/v1/admin/students/delete/:id",
     authenticateTokenAdmin,
     controllers.adminDeleteStudent
-  );
-
-  // users
-  app.get(
-    "/api/v1/admin/users",
-    authenticateTokenAdmin,
-    controllers.adminGetUsers
-  );
-  app.get(
-    "/api/v1/admin/users/:id",
-    authenticateTokenAdmin,
-    controllers.adminGetDetailUser
-  );
-  app.post(
-    "/api/v1/admin/users/create",
-    authenticateTokenAdmin,
-    controllers.adminPostCreateUser
-  );
-  app.put(
-    "/api/v1/admin/users/update/:id",
-    authenticateTokenAdmin,
-    controllers.adminPutUpdateUser
-  );
-  app.delete(
-    "/api/v1/admin/users/delete/:id",
-    authenticateTokenAdmin,
-    controllers.adminDeleteUser
   );
 
   // ERROR FALLBACK

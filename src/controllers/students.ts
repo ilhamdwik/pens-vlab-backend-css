@@ -1,6 +1,6 @@
 "use strict";
 
-import { students, users } from "@prisma/client";
+import { students } from "@prisma/client";
 import { Response, Request, NextFunction } from "express";
 
 /**
@@ -13,9 +13,8 @@ export const adminGetStudents = async (
   next: NextFunction
 ) => {
   try {
-    const students = await req.db.students.findMany({      
+    const students = await req.db.students.findMany({
       include: {
-        users: true,
         classes: true,
       },
       skip: req.query.page ? (req.query.page - 1) * 10 : undefined,
@@ -46,7 +45,6 @@ export const adminGetDetailStudent = async (
     const student = await req.db.students.findFirst({
       where: { id: req.params.id },
       include: {
-        users: true,
         classes: true,
       },
     });
@@ -71,30 +69,11 @@ export const adminPostCreateStudent = async (
   next: NextFunction
 ) => {
   try {
-    let user: users;
-    user = await req.db.users.findUnique({
-      where: { email: req.body.email },
-    });
-
-    if (!user) {
-      user = await req.db.users.create({
-        data: {
-          email: req.body.email,
-          user_to_role: {
-            create: {
-              role_id: "stu",
-            },
-          },
-        },
-      });
-    }
-
     const student = await req.db.students.create({
       data: {
         name: req.body.name,
         nrp: req.body.nrp,
         class_id: req.body.class_id,
-        user_id: user.id,
       },
     });
 

@@ -4,17 +4,23 @@ import { Response, Request, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-type userCookie = {
-  id: number;
-  nrp: string;
-  name: string;
-  kelas: number;
-  program: string;
-  jurusan: string;
-  image: string;
-  role: number;
-  chat_id: string;
+type cookieData = {
+  nomor: number;
+  nipnrp: string;
+  nama: string;
+  hakAkses: ("dosen" | "mahasiswa")[];
   iat: number;
+};
+
+type userDetail = {
+  id: number;
+  nip?: string;
+  nrp?: string;
+  name: string;
+  kelas?: string;
+  program?: string;
+  jurusan: string;
+  role: "dosen" | "mahasiswa";
 };
 
 /**
@@ -34,24 +40,17 @@ export const postLoginAdmin = async (
   next: NextFunction
 ) => {
   try {
-    const user = await req.db.users.findUnique({
+    const admin = await req.db.admins.findUnique({
       where: {
         email: req.body.email,
       },
-      include: {
-        admins: true,
-      },
     });
 
-    if (!user) {
+    if (!admin) {
       throw "User not found";
     }
 
-    if (!user.admins) {
-      throw "Unauthorized";
-    }
-
-    const login = await bcrypt.compare(req.body.pswd, user.admins.pswd);
+    const login = await bcrypt.compare(req.body.pswd, admin.pswd);
 
     if (!login) {
       throw "Unauthorized";
@@ -59,9 +58,9 @@ export const postLoginAdmin = async (
 
     const token = jwt.sign(
       {
-        user_id: user.id,
-        email: user.email,
-        name: user.admins.name,
+        user_id: admin.id,
+        email: admin.email,
+        name: admin.name,
         isAdmin: true,
       },
       process.env.SECRET_TOKEN
@@ -83,11 +82,7 @@ export const postCheckUser = async (
     {},
     {
       token: string;
-      userCas: {
-        email: string;
-        nrp?: string;
-        nip?: string;
-      };
+      userDetail: userDetail;
     }
   >,
   res: Response,
@@ -95,107 +90,83 @@ export const postCheckUser = async (
 ) => {
   try {
     //on production change this to jwt.verify using ETHOL secret token
-    const userData = (
+    const userCookie = (
       process.env.ETHOL_SECRET_TOKEN
         ? jwt.verify(req.body.token, process.env.ETHOL_SECRET_TOKEN)
         : jwt.decode(req.body.token)
-    ) as userCookie;
+    ) as cookieData;
 
-    const user = await req.db.users.findUnique({
-      where: { email: req.body.userCas.email },
+    const student = await req.db.students.findUnique({
+      where: { nrp: userCookie.nipnrp },
     });
 
-    if (user) {
-      if (req.body.userCas.nip) {
-        const lecturer = await req.db.lecturers.findFirst({
-          where: { user_id: user.id },
-        });
-        const token = jwt.sign(
-          { email: req.body.userCas.email, ...lecturer },
-          process.env.SECRET_TOKEN
-        );
+    const lecturer = await req.db.lecturers.findUnique({
+      where: { nip: userCookie.nipnrp },
+    });
+
+    if (student || lecturer) {
+      if (lecturer) {
+        const token = jwt.sign(lecturer, process.env.SECRET_TOKEN);
 
         res.status(200).send({ token });
-      } else if (req.body.userCas.nrp) {
-        const student = await req.db.students.findFirst({
-          where: { user_id: user.id },
-        });
-
-        const token = jwt.sign(
-          { email: req.body.userCas.email, ...student },
-          process.env.SECRET_TOKEN
-        );
+      } else if (student) {
+        const token = jwt.sign(student, process.env.SECRET_TOKEN);
         res.status(200).send({ token });
       }
     } else {
-      const newUser = await req.db.users.create({
-        data: {
-          email: req.body.userCas.email,
-        },
-      });
-
-      if (req.body.userCas.nip) {
+      if (req.body.userDetail.nip && req.body.userDetail.role === "dosen") {
         const lecturer = await req.db.lecturers.create({
           data: {
-            name: userData.name,
-            nip: req.body.userCas.nip,
+            name: req.body.userDetail.name,
+            nip: req.body.userDetail.nip,
             position: "dosen",
-            user_id: newUser.id,
           },
         });
-        const token = jwt.sign(
-          { email: req.body.userCas.email, ...lecturer },
-          process.env.SECRET_TOKEN
-        );
+        const token = jwt.sign(lecturer, process.env.SECRET_TOKEN);
 
         res.status(200).send({ token });
-      } else if (req.body.userCas.nrp) {
+      } else if (
+        req.body.userDetail.nrp &&
+        req.body.userDetail.role === "mahasiswa"
+      ) {
         const userClass = await req.db.classes.findFirst({
           where: {
-            kelas: userData.kelas.toString(),
-            program: userData.program,
-            jurusan: userData.jurusan,
+            kelas: req.body.userDetail.kelas.toString(),
+            program: req.body.userDetail.program,
+            jurusan: req.body.userDetail.jurusan,
           },
         });
 
         if (userClass) {
           const student = await req.db.students.create({
             data: {
-              name: userData.name,
-              nrp: req.body.userCas.nrp,
-              user_id: newUser.id,
+              name: req.body.userDetail.name,
+              nrp: req.body.userDetail.nrp,
               class_id: userClass.id,
             },
           });
 
-          const token = jwt.sign(
-            { email: req.body.userCas.email, ...student },
-            process.env.SECRET_TOKEN
-          );
+          const token = jwt.sign(student, process.env.SECRET_TOKEN);
 
           res.status(200).send({ token });
         } else {
           const newUserClass = await req.db.classes.create({
             data: {
-              jurusan: userData.jurusan,
-              kelas: userData.kelas.toString(),
-              program: userData.program,
+              jurusan: req.body.userDetail.jurusan,
+              kelas: req.body.userDetail.kelas.toString(),
+              program: req.body.userDetail.program,
             },
           });
 
           const student = await req.db.students.create({
             data: {
-              name: userData.name,
-              nrp: req.body.userCas.nrp,
-              user_id: newUser.id,
+              name: req.body.userDetail.name,
+              nrp: req.body.userDetail.nrp,
               class_id: newUserClass.id,
             },
           });
 
-          const token = jwt.sign(
-            { email: req.body.userCas.email, ...student },
-            process.env.SECRET_TOKEN
-          );
+          const token = jwt.sign(student, process.env.SECRET_TOKEN);
 
           res.status(200).send({ token });
         }

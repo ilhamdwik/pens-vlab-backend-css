@@ -18,10 +18,9 @@ type DateType = String
 
 model admins {
   id         String    @id @db.VarChar(50) @default(uuid())
-  user_id    String    @db.VarChar(50)
+  email      String    @unique @db.VarChar(255)
   name       String    @db.VarChar(255)
   pswd       String    @db.VarChar(255)
-  users      users     @relation(fields: [user_id], references: [id])
     
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -42,12 +41,10 @@ model classes {
 
 model lecturers {
   id         String    @id @db.VarChar(50) @default(uuid())
-  user_id    String    @db.VarChar(50)
   name       String    @db.VarChar(255)
   position   String    @db.VarChar(255)
-  nip        String    @db.VarChar(255)
+  nip        String    @unique @db.VarChar(255)
   avatar_url String?   @db.VarChar(255)
-  users      users     @relation(fields: [user_id], references: [id])
   quizzes    quizzes[]
     
   createdAt DateTime @default(now())
@@ -96,15 +93,6 @@ model quizzes {
   updatedAt DateTime @default(now()) @updatedAt
 }
 
-model roles {
-  id           String         @id @db.VarChar(50) @default(uuid())
-  role_name    String         @unique @db.VarChar(255)
-  user_to_role user_to_role[] 
-    
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-}
-
 model student_to_quiz {
   student_id   String   @db.VarChar(50)
   quiz_id      String   @db.VarChar(50)
@@ -125,13 +113,11 @@ model student_to_quiz {
 
 model students {
   id              String            @id @db.VarChar(50) @default(uuid())
-  user_id         String            @db.VarChar(50)
   class_id        String            @db.VarChar(50)
   name            String            @db.VarChar(255)
-  nrp             String            @db.VarChar(255)
+  nrp             String            @unique @db.VarChar(255)
   avatar_url      String?           @db.VarChar(255)
   classes         classes           @relation(fields: [class_id], references: [id])
-  users           users             @relation(fields: [user_id], references: [id])
   student_to_quiz student_to_quiz[] 
   user_progress   user_progress[]   
     
@@ -179,29 +165,4 @@ model user_progress {
   updatedAt DateTime @default(now()) @updatedAt
 
   @@id([student_id, submodule_id])
-}
-
-model user_to_role {
-  user_id String @db.VarChar(50)
-  role_id String @db.VarChar(50)
-  roles   roles  @relation(fields: [role_id], references: [id])
-  users   users  @relation(fields: [user_id], references: [id])
-
-    
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  @@id([user_id, role_id])
-}
-
-model users {
-  id           String         @id @db.VarChar(50) @default(uuid())
-  email        String         @unique @db.VarChar(255)
-  lecturers    lecturers?
-  students     students?
-  admins       admins?
-  user_to_role user_to_role[] 
-    
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
 }

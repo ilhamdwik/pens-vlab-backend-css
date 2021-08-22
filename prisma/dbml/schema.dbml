@@ -4,10 +4,9 @@
 
 Table admins {
   id String [pk]
-  user_id String [not null]
+  email String [unique, not null]
   name String [not null]
   pswd String [not null]
-  users users [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
 }
@@ -25,12 +24,10 @@ Table classes {
 
 Table lecturers {
   id String [pk]
-  user_id String [not null]
   name String [not null]
   position String [not null]
-  nip String [not null]
+  nip String [unique, not null]
   avatar_url String
-  users users [not null]
   quizzes quizzes [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
@@ -75,14 +72,6 @@ Table quizzes {
   updatedAt DateTime [default: `now()`, not null]
 }
 
-Table roles {
-  id String [pk]
-  role_name String [unique, not null]
-  user_to_role user_to_role [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [default: `now()`, not null]
-}
-
 Table student_to_quiz {
   student_id String [not null]
   quiz_id String [not null]
@@ -104,13 +93,11 @@ Table student_to_quiz {
 
 Table students {
   id String [pk]
-  user_id String [not null]
   class_id String [not null]
   name String [not null]
-  nrp String [not null]
+  nrp String [unique, not null]
   avatar_url String
   classes classes [not null]
-  users users [not null]
   student_to_quiz student_to_quiz [not null]
   user_progress user_progress [not null]
   createdAt DateTime [default: `now()`, not null]
@@ -157,34 +144,6 @@ Table user_progress {
   }
 }
 
-Table user_to_role {
-  user_id String [not null]
-  role_id String [not null]
-  roles roles [not null]
-  users users [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [default: `now()`, not null]
-
-  indexes {
-    (user_id, role_id) [pk]
-  }
-}
-
-Table users {
-  id String [pk]
-  email String [unique, not null]
-  lecturers lecturers
-  students students
-  admins admins
-  user_to_role user_to_role [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [default: `now()`, not null]
-}
-
-Ref: admins.user_id - users.id
-
-Ref: lecturers.user_id - users.id
-
 Ref: modules.prog_languages_id > prog_languages.id
 
 Ref: quizzes.prog_languages_id > prog_languages.id
@@ -199,8 +158,6 @@ Ref: student_to_quiz.student_id > students.id
 
 Ref: students.class_id > classes.id
 
-Ref: students.user_id - users.id
-
 Ref: submodule_exercises.submodule_id - submodules.id
 
 Ref: submodules.module_id > modules.id
@@ -208,7 +165,3 @@ Ref: submodules.module_id > modules.id
 Ref: user_progress.student_id > students.id
 
 Ref: user_progress.submodule_id > submodules.id
-
-Ref: user_to_role.role_id > roles.id
-
-Ref: user_to_role.user_id > users.id

@@ -1,6 +1,6 @@
 "use strict";
 
-import { lecturers, users } from "@prisma/client";
+import { lecturers } from "@prisma/client";
 import { Response, Request, NextFunction } from "express";
 
 /**
@@ -14,9 +14,6 @@ export const adminGetLecturer = async (
 ) => {
   try {
     const lecturers = await req.db.lecturers.findMany({
-      include: {
-        users: true,
-      },
       skip: req.query.page ? (req.query.page - 1) * 10 : undefined,
       take: req.query.page ? 10 : undefined,
       orderBy: {
@@ -44,9 +41,6 @@ export const adminGetDetailLecturer = async (
   try {
     const lecturer = await req.db.lecturers.findFirst({
       where: { id: req.params.id },
-      include: {
-        users: true,
-      },
     });
 
     res.status(200).send(lecturer);
@@ -67,37 +61,17 @@ export const adminPostCreateLecturer = async (
       name: string;
       position: string;
       nip: string;
-      email: string;
     }
   >,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    let user: users;
-    user = await req.db.users.findUnique({
-      where: { email: req.body.email },
-    });
-
-    if (!user) {
-      user = await req.db.users.create({
-        data: {
-          email: req.body.email,
-          user_to_role: {
-            create: {
-              role_id: "lec",
-            },
-          },
-        },
-      });
-    }
-
     const lecturer = await req.db.lecturers.create({
       data: {
         name: req.body.name,
         nip: req.body.nip,
         position: req.body.position,
-        user_id: user.id,
       },
     });
 
