@@ -119,18 +119,16 @@ export const postLessonProgress = async (
       parsedExpectedCode.forEach((v) => {
         if (!req.body.code.includes(v)) {
           checkCode = false;
+          if (!checkCode) {
+            res.status(400).send({ message: "Wrong code" });
+            return;
+          }
+          // if (answer.expected_output !== req.body.answer) {
+          //   res.status(400).send({ message: "Wrong output" });
+          //   return;
+          // }
         }
       });
-
-      if (answer.expected_output !== req.body.answer) {
-        res.status(400).send({ message: "Wrong output" });
-        return;
-      }
-
-      if (!checkCode) {
-        res.status(400).send({ message: "Wrong code" });
-        return;
-      }
     }
 
     await req.db.user_progress.upsert({

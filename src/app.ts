@@ -213,22 +213,22 @@ export const createServer = async (): Promise<Express> => {
   app.get("/api/v1/admin/courses", controllers.adminGetCourses);
   app.get(
     "/api/v1/admin/courses/:id",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminGetDetailCourse
   );
   app.post(
     "/api/v1/admin/courses/create",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminPostCreateCourse
   );
   app.put(
     "/api/v1/admin/courses/update/:id",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminPutUpdateCourse
   );
   app.delete(
     "/api/v1/admin/courses/delete/:id",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminDeleteCourse
   );
 
@@ -289,54 +289,54 @@ export const createServer = async (): Promise<Express> => {
   // lessons
   app.get(
     "/api/v1/admin/lessons",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminGetLessons
   );
   app.get(
     "/api/v1/admin/lessons/:id",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminGetDetailLesson
   );
   app.post(
     "/api/v1/admin/lessons/create",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminPostCreateLesson
   );
   app.put(
     "/api/v1/admin/lessons/update/:id",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminPutUpdateLesson
   );
   app.delete(
     "/api/v1/admin/lessons/delete/:id",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminDeleteLesson
   );
 
   // modules
   app.get(
     "/api/v1/admin/modules",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminGetModules
   );
   app.get(
     "/api/v1/admin/modules/:id",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminGetDetailModule
   );
   app.post(
     "/api/v1/admin/modules/create",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminPostCreateModule
   );
   app.put(
     "/api/v1/admin/modules/update/:id",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminPutUpdateModule
   );
   app.delete(
     "/api/v1/admin/modules/delete/:id",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminDeleteModule
   );
 

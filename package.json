@@ -32,6 +32,7 @@
     "prisma:generate": "npx prisma generate",
     "prisma:seed-admin": "ts-node ./prisma/seed-admin.ts",
     "prisma:seed-data": "ts-node ./prisma/seed-data.ts",
+    "prisma:seed-dataDummy": "ts-node ./prisma/seed-dataDummy.ts",
     "prisma:reset": "npx prisma migrate reset",
     "prisma:migrate": "npx prisma migrate dev",
     "ts-node": "ts-node --compiler-options {\"\"\"module\"\"\":\"\"\"commonjs\"\"\"}"

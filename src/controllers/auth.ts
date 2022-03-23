@@ -90,10 +90,18 @@ export const postCheckUser = async (
 ) => {
   try {
     //on production change this to jwt.verify using ETHOL secret token
+    
+    // jwt verify invalid signature
+    // const userCookie = (
+    //   process.env.ETHOL_SECRET_TOKEN
+    //   ? jwt.verify(req.body.token, process.env.ETHOL_SECRET_TOKEN, (err)=>{
+    //     if (err) return res.sendStatus(403)
+    //   })
+    //   : jwt.decode(req.body.token as string)
+    // ) as cookieData;
+
     const userCookie = (
-      process.env.ETHOL_SECRET_TOKEN
-        ? jwt.verify(req.body.token, process.env.ETHOL_SECRET_TOKEN)
-        : jwt.decode(req.body.token)
+      jwt.decode(req.body.token as string)
     ) as cookieData;
 
     const student = await req.db.students.findUnique({
