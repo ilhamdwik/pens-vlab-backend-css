@@ -20,7 +20,7 @@ export const adminGetStudents = async (
       skip: req.query.page ? (req.query.page - 1) * 10 : undefined,
       take: req.query.page ? 10 : undefined,
       orderBy: {
-        updatedAt: "asc",
+        nrp: "asc",
       },
     });
 

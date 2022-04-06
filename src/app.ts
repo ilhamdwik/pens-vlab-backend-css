@@ -404,6 +404,50 @@ export const createServer = async (): Promise<Express> => {
     controllers.adminDeleteStudent
   );
 
+  // Forums
+  app.get(
+    "/api/v1/forum/students", 
+    authenticateToken,
+    controllers.getAllForums
+  );
+
+  app.get(
+    "/api/v1/forum/students/:id",
+    authenticateToken,
+    controllers.getForumsDetail
+  );
+
+  app.post(
+    "/api/v1/forum/students/create",
+    authenticateToken,
+    controllers.postCreateForums
+  );
+
+  app.delete(
+    "/api/v1/forum/students/delete/:id",
+    authenticateToken,
+    controllers.deleteForums
+  );
+
+  // comments
+  app.get(
+    "/api/v1/comments/students",
+    // authenticateToken,
+    controllers.getComments
+  );
+
+  app.post(
+    "/api/v1/comments/students/create",
+    // authenticateToken,
+    controllers.postCreateComments
+  );
+
+  app.delete(
+    "/api/v1/comments/students/delete/:id",
+    // authenticateToken,
+    controllers.deleteComments
+  );
+
   // ERROR FALLBACK
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
     console.error(err);

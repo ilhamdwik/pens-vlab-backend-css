@@ -33,8 +33,8 @@ model classes {
   jurusan  String     @db.VarChar(255)
   students students[]
   quizzes  quizzes[]
+  forums   forums[]
 
-    
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
@@ -119,7 +119,9 @@ model students {
   avatar_url      String?           @db.VarChar(255)
   classes         classes           @relation(fields: [class_id], references: [id])
   student_to_quiz student_to_quiz[] 
-  user_progress   user_progress[]   
+  user_progress   user_progress[]
+  forums          forums[]  
+  comments        comments[]
     
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -165,4 +167,31 @@ model user_progress {
   updatedAt DateTime @default(now()) @updatedAt
 
   @@id([student_id, submodule_id])
+}
+
+model forums {
+  id                String @id @db.VarChar(50) @default(uuid())
+  author_id         String @db.VarChar(50)
+  class_id          String @db.VarChar(50)
+  question          String
+  comments          comments[]
+
+  students          students @relation(fields: [author_id], references: [id])
+  classes           classes   @relation(fields: [class_id], references: [id])
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
+}
+
+model comments {
+  id                String @id @db.VarChar(50) @default(uuid())
+  student_id        String @db.VarChar(50)
+  forum_id          String @db.VarChar(50)
+  answer            String
+
+  students          students  @relation(fields: [student_id], references: [id])
+  forums            forums    @relation(fields: [forum_id], references: [id])
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
 }

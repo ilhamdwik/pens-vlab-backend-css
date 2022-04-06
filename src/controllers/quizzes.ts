@@ -11,6 +11,9 @@ export const getQuizzes = async (
 ) => {
   try {
     const quiz = await req.db.student_to_quiz.findMany({
+      orderBy: {
+        createdAt: 'asc',
+      },
       where: {
         student_id: req.user.id,
       },
@@ -153,7 +156,7 @@ export const adminGetQuizzes = async (
       skip: req.query.page ? (req.query.page - 1) * 10 : undefined,
       take: req.query.page ? 10 : undefined,
       orderBy: {
-        updatedAt: "asc",
+        due_time: "asc",
       },
     });
 

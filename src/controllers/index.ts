@@ -10,6 +10,8 @@ import * as lessonApi from "./lesson";
 import * as modulesApi from "./modules";
 import * as quizzesApi from "./quizzes";
 import * as studentsApi from "./students";
+import * as forumsApi from "./forums";
+import * as commentsApi from "./comments";
 
 /**
  * Classes API.
@@ -35,5 +37,7 @@ export const controllers = {
   ...modulesApi,
   ...quizzesApi,
   ...studentsApi,
+  ...forumsApi,
+  ...commentsApi,
   getTimeApi,
 };

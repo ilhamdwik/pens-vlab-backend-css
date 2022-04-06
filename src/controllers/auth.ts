@@ -99,6 +99,7 @@ export const postCheckUser = async (
     //   })
     //   : jwt.decode(req.body.token as string)
     // ) as cookieData;
+    // console.log("tes error = ",userCookie)
 
     const userCookie = (
       jwt.decode(req.body.token as string)
