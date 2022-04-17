@@ -1,6 +1,5 @@
 "use strict";
 
-import { students } from "@prisma/client";
 import { Response, Request, NextFunction } from "express";
 
 /**
@@ -42,6 +41,17 @@ export const adminGetDetailStudent = async (
   next: NextFunction
 ) => {
   try {
+    const submodule = await req.db.submodules.findMany({});
+
+    const user_progress = await req.db.user_progress.findMany({
+      where: {
+        student_id: req.params.id,
+        is_done: true,
+      },
+    });
+
+    let studentProgress = ((user_progress.length / submodule.length) * 100);
+
     const student = await req.db.students.findFirst({
       where: { id: req.params.id },
       include: {
@@ -49,7 +59,7 @@ export const adminGetDetailStudent = async (
       },
     });
 
-    res.status(200).send(student);
+    res.status(200).send({ data: student, studentProgress: studentProgress });
   } catch (e) {
     next(e);
   }

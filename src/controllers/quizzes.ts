@@ -41,7 +41,6 @@ export const getQuizzes = async (
           },
         },
       },
-      
     });
 
     

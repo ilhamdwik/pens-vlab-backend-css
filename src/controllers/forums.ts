@@ -1,6 +1,5 @@
 "use strict";
 
-// import { forums, students, comments } from "@prisma/client";
 import { Response, Request, NextFunction } from "express";
 
 export const getAllForums = async (
@@ -39,7 +38,7 @@ export const getForumsDetail = async (
     next: NextFunction
 ) => {
     try {
-        const forum = await req.db.forums.findFirst({
+        const forum = await req.db.forums.findUnique({
             where: {
                 id: req.params.id,
             },
@@ -68,7 +67,6 @@ export const postCreateForums = async (
         {}, 
         {}, 
         {
-            // id: string;
             author_id: string;
             class_id: string;
             question: string;
@@ -98,6 +96,12 @@ export const deleteForums = async (
     next: NextFunction
 ) => {
     try {
+        await req.db.comments.deleteMany({
+            where: {
+                forum_id: req.params.id,
+            }
+        });
+
         await req.db.forums.delete({
             where: {
                 id: req.params.id,

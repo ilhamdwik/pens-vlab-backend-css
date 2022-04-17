@@ -34,6 +34,7 @@ model classes {
   students students[]
   quizzes  quizzes[]
   forums   forums[]
+  comments comments[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
@@ -177,7 +178,7 @@ model forums {
   comments          comments[]
 
   students          students @relation(fields: [author_id], references: [id])
-  classes           classes   @relation(fields: [class_id], references: [id])
+  classes           classes  @relation(fields: [class_id], references: [id])
 
   createdAt         DateTime @default(now())
   updatedAt         DateTime @default(now())
@@ -186,10 +187,12 @@ model forums {
 model comments {
   id                String @id @db.VarChar(50) @default(uuid())
   student_id        String @db.VarChar(50)
+  class_id          String @db.VarChar(50)
   forum_id          String @db.VarChar(50)
   answer            String
 
   students          students  @relation(fields: [student_id], references: [id])
+  classes           classes   @relation(fields: [class_id], references: [id])
   forums            forums    @relation(fields: [forum_id], references: [id])
 
   createdAt         DateTime @default(now())

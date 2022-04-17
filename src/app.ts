@@ -158,7 +158,7 @@ export const createServer = async (): Promise<Express> => {
     next();
   };
 
-  app.post("/api/v1/compile", authenticateToken, controllers.postCompile);
+  // app.post("/api/v1/compile", authenticateToken, controllers.postCompile);
   app.get("/api/v1/courses", authenticateToken, controllers.getAllCourses);
   app.get("/api/v1/quizzes", authenticateToken, controllers.getQuizzes);
   app.get("/api/v1/quizzes/:id", authenticateToken, controllers.getQuizDetail);
@@ -380,12 +380,12 @@ export const createServer = async (): Promise<Express> => {
   // students
   app.get(
     "/api/v1/admin/students",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminGetStudents
   );
   app.get(
     "/api/v1/admin/students/:id",
-    authenticateTokenAdmin,
+    // authenticateTokenAdmin,
     controllers.adminGetDetailStudent
   );
   app.post(
@@ -432,19 +432,19 @@ export const createServer = async (): Promise<Express> => {
   // comments
   app.get(
     "/api/v1/comments/students",
-    // authenticateToken,
+    authenticateToken,
     controllers.getComments
   );
 
   app.post(
     "/api/v1/comments/students/create",
-    // authenticateToken,
+    authenticateToken,
     controllers.postCreateComments
   );
 
   app.delete(
     "/api/v1/comments/students/delete/:id",
-    // authenticateToken,
+    authenticateToken,
     controllers.deleteComments
   );
 

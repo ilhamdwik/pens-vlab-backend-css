@@ -3,7 +3,7 @@
 import { Response, Request, NextFunction } from "express";
 
 export const getComments = async (
-    req: Request<{}, {}, {}>,
+    req: Request<{}, {}, {  }>,
     res: Response,
     next: NextFunction
 ) => {
@@ -18,13 +18,11 @@ export const getComments = async (
                         name: true
                     },
                 },
-                forums: {
+                classes: {
                     select: {
-                        id: true,
-                        author_id: true,
-                        class_id: true,
-                    },
-                },
+                        kelas: true
+                    }
+                }
             },
         });
 
@@ -36,13 +34,15 @@ export const getComments = async (
 
 export const postCreateComments = async (
     req: Request<
-    {}, 
-    {}, 
-    {
-        student_id: string;
-        forum_id: string;
-        answer: string;
-    }>,
+        {}, 
+        {}, 
+        {
+            student_id: string;
+            class_id: string;
+            forum_id: string;
+            answer: string;
+        }
+    >,
     res: Response,
     next: NextFunction
 ) => {
@@ -50,12 +50,13 @@ export const postCreateComments = async (
         const comment = await req.db.comments.create({
             data: {
                 student_id: req.body.student_id,
+                class_id: req.body.class_id,
                 forum_id: req.body.forum_id,
                 answer: req.body.answer,
-            }
+            },
         });
 
-        res.status(200).send(comment);
+        res.status(201).send(comment);
     } catch (err) {
         next(err);
     }

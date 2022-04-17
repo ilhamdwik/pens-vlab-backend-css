@@ -1,8 +1,8 @@
 // import { getUserDetail } from "./user";
+// import * as compilerApi from "./compiler";
 import { NextFunction, Request, Response } from "express";
 import * as authApi from "./auth";
 import * as classesApi from "./classes";
-import * as compilerApi from "./compiler";
 import * as coursesApi from "./courses";
 import * as exercisesApi from "./exercise";
 import * as lecturersApi from "./lecturers";
@@ -29,7 +29,7 @@ const getTimeApi = async (req: Request, res: Response, next: NextFunction) => {
 export const controllers = {
   ...authApi,
   ...classesApi,
-  ...compilerApi,
+  // ...compilerApi,
   ...coursesApi,
   ...exercisesApi,
   ...lecturersApi,

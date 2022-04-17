@@ -19,6 +19,7 @@ Table classes {
   students students [not null]
   quizzes quizzes [not null]
   forums forums [not null]
+  comments comments [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
 }
@@ -162,9 +163,11 @@ Table forums {
 Table comments {
   id String [pk]
   student_id String [not null]
+  class_id String [not null]
   forum_id String [not null]
   answer String [not null]
   students students [not null]
+  classes classes [not null]
   forums forums [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
@@ -197,5 +200,7 @@ Ref: forums.author_id > students.id
 Ref: forums.class_id > classes.id
 
 Ref: comments.student_id > students.id
+
+Ref: comments.class_id > classes.id
 
 Ref: comments.forum_id > forums.id
