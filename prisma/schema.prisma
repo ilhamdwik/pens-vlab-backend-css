@@ -46,10 +46,25 @@ model lecturers {
   position   String    @db.VarChar(255)
   nip        String    @unique @db.VarChar(255)
   avatar_url String?   @db.VarChar(255)
+  class_id   String?
   quizzes    quizzes[]
+  student_to_lecturer student_to_lecturer[]
+  
     
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
+}
+
+model student_to_lecturer {
+  assigned_id  String   @db.VarChar(50)
+  student_id   String   @db.VarChar(50)
+  lecturers    lecturers  @relation(fields: [assigned_id], references: [id])
+  students     students @relation(fields: [student_id], references: [id])
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@id([assigned_id, student_id])
 }
 
 model modules {
@@ -123,6 +138,7 @@ model students {
   user_progress   user_progress[]
   forums          forums[]  
   comments        comments[]
+  student_to_lecturer student_to_lecturer[] 
     
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt

@@ -1,5 +1,6 @@
 "use strict";
 
+import { PrismaClient } from "@prisma/client";
 import { Response, Request, NextFunction } from "express";
 
 export const getAllForums = async (
@@ -99,7 +100,7 @@ export const deleteForums = async (
         await req.db.comments.deleteMany({
             where: {
                 forum_id: req.params.id,
-            }
+            },
         });
 
         await req.db.forums.delete({
@@ -113,3 +114,33 @@ export const deleteForums = async (
         next(err);
     }
 }
+
+const prisma: PrismaClient = new PrismaClient();
+const db = prisma;
+export const deleteForumsPerMonth = async () => {
+    try {
+        await db.comments.deleteMany({});
+        await db.forums.deleteMany({});
+        // await req.db.comments.deleteMany({});
+        // await req.db.forums.deleteMany({});
+
+        // res.status(200).send("Data deleted");
+    } catch (err) {
+        // next(err);
+    }
+}
+
+// export const runCron = async (
+//     req: Request<{}, {}, {}>,
+//     res: Response,
+//     next: NextFunction
+// ) => {
+//     try {
+//         await req.db.comments.deleteMany({});
+//         await req.db.forums.deleteMany({});
+
+//         res.status(200).send("Data deleted");
+//     } catch (err) {
+//         next(err);
+//     }
+// }

@@ -8,6 +8,7 @@ import { PrismaClient } from "@prisma/client";
 import { Express } from "express-serve-static-core";
 var isProduction = process.env.NODE_ENV === "production";
 import jwt from "jsonwebtoken";
+import cron from "node-cron";
 
 import { controllers } from "./controllers/";
 
@@ -62,6 +63,7 @@ export const createServer = async (): Promise<Express> => {
     next();
   });
 
+  // Get Time
   app.get("/api/v1/get-time", controllers.getTimeApi);
 
   //Auth middleware
@@ -384,9 +386,19 @@ export const createServer = async (): Promise<Express> => {
     controllers.adminGetStudents
   );
   app.get(
+    "/api/v1/lecturer/students",
+    authenticateTokenLecturer,
+    controllers.lecturerGetStudents
+  );
+  app.get(
     "/api/v1/admin/students/:id",
-    // authenticateTokenAdmin,
+    authenticateTokenAdmin,
     controllers.adminGetDetailStudent
+  );
+  app.get(
+    "/api/v1/lecturer/students/:id",
+    authenticateTokenLecturer,
+    controllers.lecturerGetDetailStudent
   );
   app.post(
     "/api/v1/admin/students/create",
@@ -402,6 +414,16 @@ export const createServer = async (): Promise<Express> => {
     "/api/v1/admin/students/delete/:id",
     authenticateTokenAdmin,
     controllers.adminDeleteStudent
+  );
+  app.post(
+    "/api/v1/lecturer/student/create",
+    authenticateTokenLecturer,
+    controllers.lecturerPostCreateStudent
+  );
+  app.post(
+    "/api/v1/lecturer/student/update",
+    authenticateTokenLecturer,
+    controllers.lecturerPutUpdateStudent
   );
 
   // Forums
@@ -447,6 +469,12 @@ export const createServer = async (): Promise<Express> => {
     authenticateToken,
     controllers.deleteComments
   );
+
+  // Cron Job 
+  cron.schedule('* * * 01 * *', async () => {
+    await prisma.comments.deleteMany({});
+    await prisma.forums.deleteMany({});
+  });
 
   // ERROR FALLBACK
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {

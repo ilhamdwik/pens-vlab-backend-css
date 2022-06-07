@@ -119,6 +119,18 @@ export const adminDeleteModule = async (
   next: NextFunction
 ) => {
   try {
+    await req.db.submodules.findMany({
+      where: {
+        module_id: req.params.id,
+      },
+    });
+
+    await req.db.submodules.deleteMany({
+      where: {
+        module_id: req.params.id,
+      },
+    });
+
     await req.db.modules.delete({
       where: {
         id: req.params.id,

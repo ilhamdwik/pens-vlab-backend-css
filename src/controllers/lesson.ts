@@ -179,7 +179,8 @@ export const adminGetLessons = async (
       skip: req.query.page ? (req.query.page - 1) * 10 : undefined,
       take: req.query.page ? 10 : undefined,
       orderBy: {
-        updatedAt: "asc",
+        // updatedAt: "asc",
+        order: "asc",
       },
     });
 

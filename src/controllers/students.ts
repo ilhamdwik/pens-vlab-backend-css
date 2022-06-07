@@ -33,9 +33,71 @@ export const adminGetStudents = async (
 
 /**
  * Students API.
+ * @route GET /api/v1/lecturer/students
+ */
+ export const lecturerGetStudents = async (
+  req: Request<{}, {}, {}, { page?: number }>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const student_to_lecturers = await req.db.student_to_lecturer.findMany({
+      skip: req.query.page ? (req.query.page - 1) * 10 : undefined,
+      take: req.query.page ? 10 : undefined,
+      where: {
+        assigned_id: req.user.id,
+      },
+      include: {
+        students: {
+          include: {
+            classes: {
+              select: {
+                kelas: true,
+                program: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const count = await req.db.student_to_lecturer.count();
+
+    res.status(200).send({ data: student_to_lecturers, count: count });
+  } catch (e) {
+    next(e);
+  }
+};
+
+/**
+ * Students API.
  * @route GET /api/v1/admin/students/detail/:id
  */
 export const adminGetDetailStudent = async (
+  req: Request<{ id: string }, {}, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const student = await req.db.students.findFirst({
+      where: { id: req.params.id },
+      include: {
+        classes: true,
+      },
+    });
+
+    res.status(200).send(student);
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+/**
+ * Students API.
+ * @route GET /api/v1/lecturer/students/detail/:id
+ */
+ export const lecturerGetDetailStudent = async (
   req: Request<{ id: string }, {}, {}>,
   res: Response,
   next: NextFunction
@@ -52,14 +114,25 @@ export const adminGetDetailStudent = async (
 
     let studentProgress = ((user_progress.length / submodule.length) * 100);
 
-    const student = await req.db.students.findFirst({
-      where: { id: req.params.id },
+    const student_to_lecturer = await req.db.student_to_lecturer.findFirst({
+      where: { 
+        student_id: req.params.id 
+      },
       include: {
-        classes: true,
+        students: {
+          include: {
+            classes: {
+              select: {
+                kelas: true,
+                program: true,
+              },
+            },
+          },
+        },
       },
     });
 
-    res.status(200).send({ data: student, studentProgress: studentProgress });
+    res.status(200).send({ data: student_to_lecturer, studentProgress: studentProgress });
   } catch (e) {
     next(e);
   }
@@ -130,6 +203,30 @@ export const adminDeleteStudent = async (
   next: NextFunction
 ) => {
   try {
+    await req.db.user_progress.deleteMany({
+      where: {
+        student_id: req.params.id,
+      },
+    });
+
+    await req.db.student_to_quiz.deleteMany({
+      where: {
+        student_id: req.params.id,
+      },
+    });
+
+    await req.db.comments.deleteMany({
+      where: {
+        student_id: req.params.id,
+      },
+    });
+
+    await req.db.forums.deleteMany({
+      where: {
+        author_id: req.params.id,
+      },
+    });
+
     await req.db.students.delete({
       where: {
         id: req.params.id,

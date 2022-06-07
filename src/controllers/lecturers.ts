@@ -1,6 +1,6 @@
 "use strict";
 
-import { lecturers } from "@prisma/client";
+import { lecturers, students } from "@prisma/client";
 import { Response, Request, NextFunction } from "express";
 
 /**
@@ -118,6 +118,12 @@ export const adminDeleteLecturer = async (
   next: NextFunction
 ) => {
   try {
+    // await req.db.student_to_lecturer.deleteMany({
+    //   where: {
+    //     assigned_id: req.params.id,
+    //   },
+    // });
+
     await req.db.lecturers.delete({
       where: {
         id: req.params.id,
@@ -125,6 +131,114 @@ export const adminDeleteLecturer = async (
     });
 
     res.status(200).send("Data deleted");
+  } catch (e) {
+    next(e);
+  }
+};
+
+/**
+ * Lecturer API.
+ * @route POST /api/v1/lecturer/student/create
+ */
+export const lecturerPostCreateStudent = async (
+  req: Request<
+    { id: string },
+    {},
+    {
+      class_id: string;
+      assigned_id: string;
+      assigned_students: students[];
+    }
+  >,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const getLecturers = await req.db.lecturers.findFirst({
+      where: {
+        class_id: req.body.class_id,
+      }
+    });
+
+    if(getLecturers){
+      res.status(400).send({ message: "Kelas Sudah memiliki dosen pengampu" });
+      return;
+    }
+
+    const lecturer = await req.db.lecturers.update({
+      where: {
+        id: req.user.id,
+      },
+      data: {
+        class_id: req.body.class_id,
+      },
+    });
+
+    await req.db.student_to_lecturer.createMany({
+      data: req.body.assigned_students.map((v) => ({
+        assigned_id: lecturer.id,
+        student_id: v.id,
+      })),
+    });
+
+    res.status(201).send(lecturer);
+  } catch (e) {
+    next(e);
+  }
+};
+
+/**
+ * Lecturer API.
+ * @route PUT /api/v1/lecturer/student/update
+ */
+export const lecturerPutUpdateStudent = async (
+  req: Request<
+    {}, 
+    {}, 
+    {
+      class_id: string;
+      assigned_id: string;
+      assigned_students: students[];
+    }
+  >,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const getLecturers = await req.db.lecturers.findFirst({
+      where: {
+        class_id: req.body.class_id,
+      }
+    });
+
+    if(getLecturers){
+      res.status(400).send({ message: "Kelas Sudah memiliki dosen pengampu" });
+      return;
+    }
+
+    const lecturer = await req.db.lecturers.update({
+      where: {
+        id: req.user.id,
+      },
+      data: {
+        class_id: req.body.class_id,
+      },
+    });
+
+    await req.db.student_to_lecturer.deleteMany({
+      where: {
+        assigned_id: lecturer.id,
+      },
+    });
+
+    await req.db.student_to_lecturer.createMany({
+      data: req.body.assigned_students.map((v) => ({
+        assigned_id: lecturer.id,
+        student_id: v.id,
+      })),
+    });
+    
+    res.status(200).send(lecturer);
   } catch (e) {
     next(e);
   }

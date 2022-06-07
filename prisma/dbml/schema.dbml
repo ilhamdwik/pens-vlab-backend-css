@@ -30,9 +30,24 @@ Table lecturers {
   position String [not null]
   nip String [unique, not null]
   avatar_url String
+  class_id String
   quizzes quizzes [not null]
+  student_to_lecturer student_to_lecturer [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
+}
+
+Table student_to_lecturer {
+  assigned_id String [not null]
+  student_id String [not null]
+  lecturers lecturers [not null]
+  students students [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [default: `now()`, not null]
+
+  indexes {
+    (assigned_id, student_id) [pk]
+  }
 }
 
 Table modules {
@@ -104,6 +119,7 @@ Table students {
   user_progress user_progress [not null]
   forums forums [not null]
   comments comments [not null]
+  student_to_lecturer student_to_lecturer [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
 }
@@ -172,6 +188,10 @@ Table comments {
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
 }
+
+Ref: student_to_lecturer.assigned_id > lecturers.id
+
+Ref: student_to_lecturer.student_id > students.id
 
 Ref: modules.prog_languages_id > prog_languages.id
 

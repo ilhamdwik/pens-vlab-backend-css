@@ -194,6 +194,81 @@ Yang dimana sintaks (.) adalah cara pemanggilan css untuk atribut class.
           placeholder: "// type here",
         },
     });
+
+    await prisma.classes.createMany({
+      data: [
+        {
+          kelas: "1 ITA D4",
+          program: "D4",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "1 ITB D4",
+          program: "D4",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "2 ITA D4",
+          program: "D4",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "2 ITB D4",
+          program: "D4",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "3 ITA D4",
+          program: "D4",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "3 ITB D4",
+          program: "D4",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "4 ITA D4",
+          program: "D4",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "4 ITB D4",
+          program: "D4",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "1 ITA D3",
+          program: "D3",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "1 ITB D3",
+          program: "D3",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "2 ITA D3",
+          program: "D3",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "2 ITB D3",
+          program: "D3",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "3 ITA D3",
+          program: "D3",
+          jurusan: "Teknik Informatika",
+        },
+        {
+          kelas: "3 ITB D3",
+          program: "D3",
+          jurusan: "Teknik Informatika",
+        },
+      ],
+    });
 }
 
 main()

@@ -263,13 +263,14 @@ export const adminDeleteCourse = async (
       },
     });
 
-    fs.unlinkSync(process.cwd() + "/public" + course.thumbnail_url);
-
     await req.db.prog_languages.delete({
       where: {
         id: req.params.id,
       },
     });
+    
+    fs.unlinkSync(process.cwd() + "/public" + course.thumbnail_url);
+
 
     res.status(200).send("Data deleted");
   } catch (e) {
