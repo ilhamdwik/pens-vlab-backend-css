@@ -24,7 +24,6 @@
     "node-cron": "^3.0.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
-    "pg-promise": "^10.11.1",
     "winston": "^3.3.3"
   },
   "scripts": {
