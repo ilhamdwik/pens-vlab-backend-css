@@ -102,16 +102,18 @@ export const postCheckUser = async (
     // ) as cookieData;
     // console.log("tes error = ",userCookie)
 
-    const userCookie = (
-      jwt.decode(req.body.token as string)
-    ) as cookieData;
+    // const userCookie = (
+    //   jwt.decode(req.body.token as string)
+    // ) as cookieData;
 
     const student = await req.db.students.findUnique({
-      where: { nrp: userCookie.nipnrp },
+      // where: { nrp: userCookie.nipnrp },
+      where: { nrp: req.body.token },
     });
 
     const lecturer = await req.db.lecturers.findUnique({
-      where: { nip: userCookie.nipnrp },
+      // where: { nip: userCookie.nipnrp },
+      where: { nip: req.body.token },
     });
 
     if (student || lecturer) {

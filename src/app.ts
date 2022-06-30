@@ -471,7 +471,7 @@ export const createServer = async (): Promise<Express> => {
   );
 
   // Cron Job 
-  cron.schedule('* * * 01 * *', async () => {
+  cron.schedule('59 59 23 1 * *', async () => {
     await prisma.comments.deleteMany({});
     await prisma.forums.deleteMany({});
   });
