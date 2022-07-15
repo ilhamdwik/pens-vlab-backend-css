@@ -102,18 +102,16 @@ export const postCheckUser = async (
     // ) as cookieData;
     // console.log("tes error = ",userCookie)
 
-    // const userCookie = (
-    //   jwt.decode(req.body.token as string)
-    // ) as cookieData;
+    const userCookie = (
+      jwt.decode(req.body.token as string)
+    ) as cookieData;
 
     const student = await req.db.students.findUnique({
-      // where: { nrp: userCookie.nipnrp },
-      where: { nrp: req.body.token },
+      where: { nrp: userCookie.nipnrp },
     });
 
     const lecturer = await req.db.lecturers.findUnique({
-      // where: { nip: userCookie.nipnrp },
-      where: { nip: req.body.token },
+      where: { nip: userCookie.nipnrp },
     });
 
     if (student || lecturer) {
@@ -128,67 +126,67 @@ export const postCheckUser = async (
         res.status(200).send({ token });
       }
     } 
-    // else {
-    //   if (req.body.userDetail.nip && req.body.userDetail.role === "dosen") {
-    //     const lecturer = await req.db.lecturers.create({
-    //       data: {
-    //         name: req.body.userDetail.name,
-    //         nip: req.body.userDetail.nip,
-    //         position: "dosen",
-    //         class_id: req.body.userDetail.class_id ?? "",
-    //       },
-    //     });
-    //     const token = jwt.sign(lecturer, process.env.SECRET_TOKEN);
+    else {
+      if (req.body.userDetail.nip && req.body.userDetail.role === "dosen") {
+        const lecturer = await req.db.lecturers.create({
+          data: {
+            name: req.body.userDetail.name,
+            nip: req.body.userDetail.nip,
+            position: "dosen",
+            class_id: req.body.userDetail.class_id ?? "",
+          },
+        });
+        const token = jwt.sign(lecturer, process.env.SECRET_TOKEN);
 
-    //     res.status(200).send({ token });
-    //   } 
-    //   else if (
-    //     req.body.userDetail.nrp &&
-    //     req.body.userDetail.role === "mahasiswa"
-    //   ) {
-    //     const userClass = await req.db.classes.findFirst({
-    //       where: {
-    //         kelas: req.body.userDetail.kelas.toString(),
-    //         program: req.body.userDetail.program,
-    //         jurusan: req.body.userDetail.jurusan,
-    //       },
-    //     });
+        res.status(200).send({ token });
+      } 
+      else if (
+        req.body.userDetail.nrp &&
+        req.body.userDetail.role === "mahasiswa"
+      ) {
+        const userClass = await req.db.classes.findFirst({
+          where: {
+            kelas: req.body.userDetail.kelas.toString(),
+            program: req.body.userDetail.program,
+            jurusan: req.body.userDetail.jurusan,
+          },
+        });
 
-    //     if (userClass) {
-    //       const student = await req.db.students.create({
-    //         data: {
-    //           name: req.body.userDetail.name,
-    //           nrp: req.body.userDetail.nrp,
-    //           class_id: userClass.id,
-    //         },
-    //       });
+        if (userClass) {
+          const student = await req.db.students.create({
+            data: {
+              name: req.body.userDetail.name,
+              nrp: req.body.userDetail.nrp,
+              class_id: userClass.id,
+            },
+          });
 
-    //       const token = jwt.sign(student, process.env.SECRET_TOKEN);
+          const token = jwt.sign(student, process.env.SECRET_TOKEN);
 
-    //       res.status(200).send({ token });
-    //     } else {
-    //       const newUserClass = await req.db.classes.create({
-    //         data: {
-    //           jurusan: req.body.userDetail.jurusan,
-    //           kelas: req.body.userDetail.kelas.toString(),
-    //           program: req.body.userDetail.program,
-    //         },
-    //       });
+          res.status(200).send({ token });
+        } else {
+          const newUserClass = await req.db.classes.create({
+            data: {
+              jurusan: req.body.userDetail.jurusan,
+              kelas: req.body.userDetail.kelas.toString(),
+              program: req.body.userDetail.program,
+            },
+          });
 
-    //       const student = await req.db.students.create({
-    //         data: {
-    //           name: req.body.userDetail.name,
-    //           nrp: req.body.userDetail.nrp,
-    //           class_id: newUserClass.id,
-    //         },
-    //       });
+          const student = await req.db.students.create({
+            data: {
+              name: req.body.userDetail.name,
+              nrp: req.body.userDetail.nrp,
+              class_id: newUserClass.id,
+            },
+          });
 
-    //       const token = jwt.sign(student, process.env.SECRET_TOKEN);
+          const token = jwt.sign(student, process.env.SECRET_TOKEN);
 
-    //       res.status(200).send({ token });
-    //     }
-    //   }
-    // }
+          res.status(200).send({ token });
+        }
+      }
+    }
   } catch (err) {
     next(err);
   }

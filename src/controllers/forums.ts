@@ -51,8 +51,8 @@ export const getForumsDetail = async (
                 classes: {
                     select: {
                         kelas: true,
-                    }
-                }
+                    },
+                },
             },
         });
 

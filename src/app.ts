@@ -470,11 +470,11 @@ export const createServer = async (): Promise<Express> => {
     controllers.deleteComments
   );
 
-  // Cron Job 
-  cron.schedule('59 59 23 1 * *', async () => {
-    await prisma.comments.deleteMany({});
-    await prisma.forums.deleteMany({});
-  });
+  // Cron Job for delete forums and comments
+  // cron.schedule('59 59 23 1 * *', async () => {
+  //   await prisma.comments.deleteMany({});
+  //   await prisma.forums.deleteMany({});
+  // });
 
   // ERROR FALLBACK
   app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
